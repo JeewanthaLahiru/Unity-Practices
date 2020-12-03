@@ -19,6 +19,7 @@ public class PlayerScript : MonoBehaviour
     {
         CheckPlayerInput();
         UpdatePlayerPosision();
+        PlayerAnimation();
     }
 
     void CheckPlayerInput()
@@ -55,5 +56,17 @@ public class PlayerScript : MonoBehaviour
 
         transform.localPosition = pos;
         transform.localScale = scale;
+    }
+
+    void PlayerAnimation()
+    {
+        if (walk)
+        {
+            GetComponent<Animator>().SetBool("isRunning", true);
+        }
+        else
+        {
+            GetComponent<Animator>().SetBool("isRunning", false);
+        }
     }
 }
