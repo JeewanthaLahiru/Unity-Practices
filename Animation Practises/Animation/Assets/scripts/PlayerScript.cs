@@ -6,6 +6,7 @@ public class PlayerScript : MonoBehaviour
 {
 
     public Vector2 velocity;
+    public LayerMask wallMask;
     // Start is called before the first frame update
 
     bool walk, walk_left, walk_right, jump;
@@ -51,8 +52,10 @@ public class PlayerScript : MonoBehaviour
                 pos.x += velocity.x * Time.deltaTime;
                 scale.x = 1;
             }
-
+            pos = CheckWalls(pos, scale.x);
         }
+
+        
 
         transform.localPosition = pos;
         transform.localScale = scale;
@@ -68,5 +71,24 @@ public class PlayerScript : MonoBehaviour
         {
             GetComponent<Animator>().SetBool("isRunning", false);
         }
+    }
+
+    Vector3 CheckWalls(Vector3 pos, float direction)
+    {
+        Vector2 originTop = new Vector2(pos.x + direction * 0.4f, pos.y + 1f - 0.2f);
+        Vector2 originMiddle = new Vector2(pos.x + direction * 0.4f, pos.y);
+        Vector2 originBottom = new Vector2(pos.x + direction * 0.4f, pos.y - 1f);
+
+        RaycastHit2D wallTop = Physics2D.Raycast(originTop, new Vector2(direction, 0), velocity.x * Time.deltaTime, wallMask);
+        RaycastHit2D wallMid = Physics2D.Raycast(originMiddle, new Vector2(direction, 0), velocity.x * Time.deltaTime, wallMask);
+        RaycastHit2D wallBottom = Physics2D.Raycast(originBottom, new Vector2(direction, 0), velocity.x * Time.deltaTime, wallMask);
+
+        if (wallTop.collider != null || wallMid.collider != null || wallBottom.collider != null)
+        {
+            pos.x -= direction * Time.deltaTime * velocity.x;
+        }
+
+        return pos;
+
     }
 }
